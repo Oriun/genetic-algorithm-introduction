@@ -17,7 +17,8 @@ async function main(argc: number, argv: string[]) {
   const nbOfTests = 20;
   const ac = (a: [Genome, number]) => [encodeGenome(a[0]), a[1]];
   const launchTime = Date.now();
-  await mkdir(`data/${launchTime}`);
+  await mkdir(`data`).catch(()=>void 0);
+  await mkdir(`data/${launchTime}`).catch(()=>void 0);
   let population: [Genome, number][] = Array.from(
     { length: population_size },
     () => [randomGenome([4, 8, 16, 8, 4]), 0]
