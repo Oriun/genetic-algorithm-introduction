@@ -29,7 +29,11 @@ export function uniform_crossover(
     const gene_b = chunks(mutation(B[0], stress_B)[1], chunk_size);
     const crossed = Array.from({ length: gene_a.length }, (_, i) =>
       Math.random() > 0.5 ? [gene_b[i], gene_a[i]] : [gene_a[i], gene_b[i]]
-    ).flat(Infinity);
+    ).reduce((acc, prev)=>{
+      acc[0].push(...prev[0])
+      acc[1].push(...prev[1])
+      return acc
+    },[[],[]]);
     const new_A = [A[0][0], crossed[0]] as Genome;
     const new_B = [B[0][0], crossed[1]] as Genome;
     return [

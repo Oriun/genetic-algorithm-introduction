@@ -1,4 +1,4 @@
-import { uniform_independant_bias_crossover } from "./crossover";
+import { uniform_crossover, uniform_independant_bias_crossover } from "./crossover";
 import { Fitness, Genome, SelectionItem } from "./types";
 
 export function getDistance(
@@ -9,7 +9,7 @@ export function getDistance(
 ): number {
   const layers_A = A[1];
   const layers_B = B[1];
-
+  console.assert(layers_A instanceof Array, 'layers_a not an array', layers_A)
   return layers_A.reduce((acc, cur, index) => {
     return acc + 2 - Math.abs(cur - layers_B[index]);
   }, 0) / layers_A.length + Math.abs(fitness_A - fitness_B) ;

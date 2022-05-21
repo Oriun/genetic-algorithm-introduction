@@ -83,7 +83,7 @@ export class Network {
       /**
        * 3. Run activation function and sum weights to at the end of each line
        */
-      for (let i = 0; i < this.topology[0]; i++) {
+      for (let i = 0; i < layer.length; i++) {
         this.tmpLayer[i][0] = RELU6(this.tmpLayer[i][0]);
         for (let j = 1; j < g; j++) {
           this.tmpLayer[j - 1][g] += this.tmpLayer[i][0] * this.tmpLayer[i][j];
@@ -92,7 +92,7 @@ export class Network {
       /**
        * 4. Put Summarize weights at the beginning
        */
-      for (let i = 0; i < this.topology[0]; i++) {
+      for (let i = 0; i < layer.length; i++) {
         this.tmpLayer[i][0] = this.tmpLayer[i][g];
         this.tmpLayer[i][g] = 0;
       }

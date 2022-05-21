@@ -11,21 +11,23 @@ async function main(argc: number, argv: string[]) {
    * To keep the same size use:
    *  population_size = selection_size² + 2 * selection_size
    **/
-  const selection_size = 25;
-  const population_size = 675;
-  const max_generation = 10_000;
-  const nbOfTests = 20;
+  const selection_size = 50;
+  const population_size = 50 ** 2 + 50 * 2;
+  const max_generation = 100_000;
+  const topology = [4, 4]
+  const rubiksAITopology = [12, 8, 16, 8, 4]
   const ac = (a: [Genome, number]) => [encodeGenome(a[0]), a[1]];
   const launchTime = Date.now();
-  await mkdir(`data`).catch(()=>void 0);
-  await mkdir(`data/${launchTime}`).catch(()=>void 0);
+  await mkdir(`data`).catch(() => void 0);
+  await mkdir(`data/${launchTime}`).catch(() => void 0);
   let population: [Genome, number][] = Array.from(
     { length: population_size },
-    () => [randomGenome([4, 8, 16, 8, 4]), 0]
+    () => [randomGenome(topology), 0]
   );
+  console.log("Population", population_size);
   console.log("Brain size", lengthFromTopology(population[0][0][0]));
 
-  const trainData = data.slice(0, nbOfTests) as TrainData;
+  const trainData = data as TrainData;
   const bests: [Genome, number][] = [];
   for (let generation = 0; generation < max_generation; generation++) {
     const res = trainData.map(({ input, max }) =>
@@ -44,27 +46,30 @@ async function main(argc: number, argv: string[]) {
       process.stdout.write("\nBest " + best[1].toFixed(10) + "\n");
       bests.push([...best]);
     }
-    if (!(generation % 100))
+    if (!(generation % 100)) {
       await writeFile(
         `data/${launchTime}/results-gen${generation}.json`,
         JSON.stringify({
           generation,
+          trainData,
           maxFitness: best[1],
           bests: bests.map(ac),
           population: population.map(ac),
         })
       );
+    }
     if (best[1] > 0.9999) {
       process.stdout.write("\rGeneration n°" + generation);
       break;
     }
     if (generation + 1 < max_generation)
-      population = selection(population, selection_size * 2);
+      population = selection(population, selection_size, 1 + Math.exp(generation / 2_000));
     process.stdout.write("\rGeneration n°" + generation);
   }
 
   process.stdout.write(`
   **************
+  Topology : [${topology.join(',')}]
   Generation : ${max_generation}
   Population : ${population.length}
   Best : ${population[0][1]}
@@ -75,9 +80,11 @@ async function main(argc: number, argv: string[]) {
   **************\n`);
 
   await writeFile(
-    `data/${launchTime}/results-gen${max_generation}.json`,
+    `data/${launchTime}/results-final.json`,
     JSON.stringify({
+      topology,
       generation: max_generation,
+      trainData,
       maxFitness: bests.at(-1)![1],
       bests: bests.map(ac),
       population: population.map(ac),
