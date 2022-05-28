@@ -14,7 +14,7 @@ async function main(argc: number, argv: string[]) {
   const selection_size = 50;
   const population_size = 50 ** 2 + 50 * 2;
   const max_generation = 100_000;
-  const topology = [4, 4]
+  const topology = [4, 8, 16, 8, 4]
   const rubiksAITopology = [12, 8, 16, 8, 4]
   const ac = (a: [Genome, number]) => [encodeGenome(a[0]), a[1]];
   const launchTime = Date.now();

@@ -1,4 +1,4 @@
-import { mutation } from "./genome";
+import { mutation, close_mutation } from "./genome";
 import { SelectionItem, Stress, Offspring, Genome } from "./types";
 
 function chunks<T>(table: T[], size: number): T[][] {
@@ -75,8 +75,8 @@ export function uniform_independant_bias_crossover(
   chunk_size: number = 1
 ): [Offspring, Offspring] {
   const half = stress_A / (stress_A + stress_B);
-  const gene_a = chunks(mutation(A[0], stress_A)[1], chunk_size);
-  const gene_b = chunks(mutation(B[0], stress_B)[1], chunk_size);
+  const gene_a = chunks(close_mutation(A[0], stress_A)[1], chunk_size);
+  const gene_b = chunks(close_mutation(B[0], stress_B)[1], chunk_size);
   const new_A = [
     A[0][0],
     Array.from({ length: gene_a.length }, (_, i) =>

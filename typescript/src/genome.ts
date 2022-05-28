@@ -45,3 +45,14 @@ export function mutation(genome: Genome, mutationFactor: number): Genome {
     }),
   ];
 }
+export function close_mutation(genome: Genome, mutationFactor: number): Genome {
+  return [
+    genome[0],
+    genome[1].map((a) => {
+      const rand = Math.random();
+      const doesMutate = rand < Math.max(.1, mutationFactor);
+      if (!doesMutate) return a;
+      return Math.max(-1, Math.min(1, a + Math.random() - 1));
+    }),
+  ];
+}
